@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Cors;
 
 namespace StripeApp.Controllers
 {
@@ -34,14 +35,14 @@ namespace StripeApp.Controllers
         [Route("[action]")]
         [HttpPost]
         public object CreatePayment([FromBody] CardInfo cardRequest)
-        {
+        { 
             return (new StripeInfoProvider(this.configuration)).createPayment(cardRequest);
         }
         // POST api/stripe/confirmpayment
         [Route("[action]")]
         [HttpPost]
         public object ConfirmPayment([FromBody] ConfirmPaymentInfo confirmPaymentInfo)
-        {
+        { 
             return (new StripeInfoProvider(this.configuration)).confirmPayment(confirmPaymentInfo);
         }
     }

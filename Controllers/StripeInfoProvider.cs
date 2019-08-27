@@ -31,6 +31,8 @@ namespace StripeApp.Controllers
     {
         [JsonProperty("payment_intent_client_secret")]
         public string PaymentClientSecret { get; set; }
+        [JsonProperty("redirect_url")]
+        public string RedirectUrl { get; set; }
 
         [JsonProperty("payment_intent_id")]
         public string PaymentIntentId { get; set; }
@@ -77,7 +79,7 @@ namespace StripeApp.Controllers
             return  new { customError = "Payment method not created" };
         }
         public dynamic confirmPayment(ConfirmPaymentInfo confirmPaymentInfo){
-            string stripeRedirectUrl = configuration.GetValue<string>("StripeSettings:RedirectUrl");
+            string stripeRedirectUrl = String.IsNullOrEmpty(confirmPaymentInfo.RedirectUrl)? configuration.GetValue<string>("StripeSettings:RedirectUrl")+"/Home/ConfirmPayment":confirmPaymentInfo.RedirectUrl;
             var paymentIntentService = new PaymentIntentService();
             PaymentIntent paymentIntent = null;
 
@@ -89,7 +91,7 @@ namespace StripeApp.Controllers
                     if(paymentIntent.Status=="requires_payment_method"){
                         generatePaymentResponse(paymentIntent);
                     }else{
-                        var confirmOptions = new PaymentIntentConfirmOptions { ReturnUrl = stripeRedirectUrl+"/Home/ConfirmPayment", };
+                        var confirmOptions = new PaymentIntentConfirmOptions { ReturnUrl = stripeRedirectUrl };
                         paymentIntent = paymentIntentService.Confirm(
                             confirmPaymentInfo.PaymentIntentId,
                             confirmOptions
