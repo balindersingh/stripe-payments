@@ -12,3 +12,7 @@
 ## Build and run
 * Now you just need to run following command to see the application in action
 * ```dotnet build && dotnet run```
+
+## To publish to somewhere on the cloud i.e. Azure app service 
+* ```dotnet publish -c Release -o ./publish```
+* Then just right click on *publish* folder and click Deploy To Web App. Checkout [How to deploy .net core on Azure using VSCode](https://docs.microsoft.com/en-us/aspnet/core/tutorials/publish-to-azure-webapp-using-vscode?view=aspnetcore-2.2)
