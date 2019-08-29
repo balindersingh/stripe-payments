@@ -18,10 +18,10 @@ heroku container:login
 ## create a app on heroku i.e. my-heroku-app
 
 ## We need to tag the heroku target image
-docker tag stripeappimage registry.heroku.com/<my-heroku-app>/web
+docker tag stripeappimage registry.heroku.com/my-heroku-app/web
 
 ## Push the docker image
-docker push registry.heroku.com/<my-heroku-app>/web
+docker push registry.heroku.com/my-heroku-app/web
 
 ## Finally make the container live
-heroku container:release web -a <my-heroku-app>
+heroku container:release web -a my-heroku-app
