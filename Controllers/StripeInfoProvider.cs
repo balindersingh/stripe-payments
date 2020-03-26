@@ -39,6 +39,8 @@ namespace StripeApp.Controllers
     }
     public class StripeInfoProvider
     {
+        public const string StripeConfigKey = "StripeSettings:SecretKey";
+        public const string StripeConfigRedirectUrl = "StripeSettings:RedirectUrl";
         private IConfiguration configuration;
         public StripeInfoProvider(IConfiguration configuration){
             this.configuration = configuration;
@@ -49,7 +51,7 @@ namespace StripeApp.Controllers
                 int paymentAmount = cardInfo.Amount;
                 if (cardInfo.CardNumber != null)
                 {
-                    StripeConfiguration.ApiKey = this.configuration.GetValue<string>("StripeSettings:SecretKey");
+                    StripeConfiguration.ApiKey = GetEnvironmentConfigVar(StripeConfigKey, this.configuration.GetValue<string>(StripeConfigKey));
                     var options = new PaymentMethodCreateOptions
                     {
                         Type = "card",
@@ -79,7 +81,7 @@ namespace StripeApp.Controllers
             return  new { customError = "Payment method not created" };
         }
         public dynamic confirmPayment(ConfirmPaymentInfo confirmPaymentInfo){
-            string stripeRedirectUrl = String.IsNullOrEmpty(confirmPaymentInfo.RedirectUrl)? configuration.GetValue<string>("StripeSettings:RedirectUrl")+"/Home/ConfirmPayment":confirmPaymentInfo.RedirectUrl;
+            string stripeRedirectUrl = String.IsNullOrEmpty(confirmPaymentInfo.RedirectUrl)? GetEnvironmentConfigVar(StripeConfigKey, this.configuration.GetValue<string>(StripeConfigRedirectUrl))+"/Home/ConfirmPayment":confirmPaymentInfo.RedirectUrl;
             var paymentIntentService = new PaymentIntentService();
             PaymentIntent paymentIntent = null;
 
@@ -162,6 +164,15 @@ namespace StripeApp.Controllers
 
                 }
             return paymentIntent;
+        }
+        private string GetEnvironmentConfigVar(string variableName,string defaultValue)
+        {
+            string variableValue = Environment.GetEnvironmentVariable(variableName);
+            if (!String.IsNullOrEmpty(variableValue))
+            {
+                return variableValue;
+            }
+            return defaultValue;
         }
     }
 }
